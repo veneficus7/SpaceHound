@@ -13,6 +13,7 @@
   <img alt="Windows 10/11" src="https://img.shields.io/badge/Windows-10%20%7C%2011-0078D6">
   <img alt="Python 3.10+" src="https://img.shields.io/badge/Python-3.10%2B-3776AB">
   <img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-8b5cf6">
+  <a href="https://github.com/veneficus7/SpaceHound/actions/workflows/build.yml"><img alt="build" src="https://github.com/veneficus7/SpaceHound/actions/workflows/build.yml/badge.svg"></a>
 </p>
 
 ![SpaceHound overview](docs/screenshots/overview.png)
@@ -114,7 +115,7 @@ prints the biggest folders, largest files, type breakdown and insights without o
 ```
 
 or manually: `pip install -r requirements-dev.txt` then `pyinstaller spacehound.spec --noconfirm --clean`.
-A ready-made GitHub Actions workflow lives in [`docs/ci/build.yml`](docs/ci/build.yml): copy it to `.github/workflows/` to run the tests and build the executable on every push, and to attach it to a release when you push a `v*` tag.
+GitHub Actions ([`.github/workflows/build.yml`](.github/workflows/build.yml)) runs the tests and builds the executable on every push, and attaches it to a GitHub release when you push a `v*` tag.
 
 ## How it works
 
