@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SpaceHound</title>
+  <link rel="preload" href="fonts/SpaceGrotesk.ttf" as="font" type="font/ttf" crossorigin>
+  <link rel="stylesheet" href="css/app.css">
+  <link rel="icon" href="favicon.png">
+</head>
+<body>
+  <div class="aurora" aria-hidden="true"><i></i><div class="noise"></div></div>
+  <div id="app">
+    <aside id="sidebar">
+      <div class="brand">
+        <div class="brand-logo"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round"><path d="M4.5 15.5a7.5 7.5 0 0 1 15 0" stroke="#fff"/><path d="M12 15.5l3.8-4.2" stroke="#fff"/><circle cx="12" cy="15.5" r="1.7" fill="#fff" stroke="#fff"/><path d="M7 19.5h10" stroke="#fff"/></svg></div>
+        <div><div class="brand-name">SpaceHound</div><div class="brand-sub">Disk space detective</div></div>
+      </div>
+      <nav id="nav"></nav>
+      <div class="side-foot" id="side-foot"></div>
+    </aside>
+    <main id="main">
+      <header id="topbar"></header>
+      <section id="view"></section>
+    </main>
+  </div>
+  <div id="overlay-root"></div>
+  <div id="toast-root"></div>
+  <div id="tooltip" class="tooltip hidden"></div>
+  <canvas id="fx"></canvas>
+
+  <script src="js/util.js"></script>
+  <script src="js/icons.js"></script>
+  <script src="js/bridge.js"></script>
+  <script src="js/charts.js"></script>
+  <script src="js/treemap.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/fx.js"></script>
+  <script src="js/views/common.js"></script>
+  <script src="js/views/overview.js"></script>
+  <script src="js/views/explorer.js"></script>
+  <script src="js/views/map.js"></script>
+  <script src="js/views/largest.js"></script>
+  <script src="js/views/old.js"></script>
+  <script src="js/views/cleanup.js"></script>
+  <script src="js/views/duplicates.js"></script>
+  <script src="js/views/devjunk.js"></script>
+  <script src="js/views/track.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
