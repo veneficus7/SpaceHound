@@ -55,7 +55,7 @@ class SpaceMap {
     if (!m) return "#6b7385";
     const days = Math.max(0, (Date.now() / 1000 - m) / 86400);
     const t = Math.min(1, Math.log10(1 + days) / Math.log10(1 + 2500));
-    const stops = [[34, 211, 238], [139, 92, 246], [244, 63, 94], [148, 90, 60]];
+    const stops = [[170, 238, 250], [108, 194, 174], [240, 169, 60], [224, 96, 60], [122, 58, 34]];
     const seg = Math.min(stops.length - 2, Math.floor(t * (stops.length - 1)));
     const f = t * (stops.length - 1) - seg;
     const a = stops[seg], b = stops[seg + 1];
@@ -170,7 +170,7 @@ class SpaceMap {
     if (this.colorBy === "age") return this.ageColor(n.m);
     if (this.colorBy === "folder" || n.t === 2) return n.t === 2 ? "#4a5262" : `hsl(${this.topHue.get(n) ?? 260} 62% 58%)`;
     const k = n.t === 1 ? n.k : this.domCat(n);
-    return k != null ? this.catColor(k) : "#7c6cf0";
+    return k != null ? this.catColor(k) : "#b8834f";
   }
 
   layoutBubbles(W, H) {
@@ -423,11 +423,11 @@ class SpaceMap {
     ctx.beginPath();
     ctx.arc(cx, cy, r0 - 4, 0, Math.PI * 2);
     const cg = ctx.createRadialGradient(cx, cy - r0 * 0.4, 2, cx, cy, r0);
-    cg.addColorStop(0, "rgba(139,92,246,0.35)");
+    cg.addColorStop(0, "rgba(240,169,60,0.3)");
     cg.addColorStop(1, this.theme.solid);
     ctx.fillStyle = cg;
     ctx.fill();
-    ctx.strokeStyle = "rgba(139,92,246,0.45)";
+    ctx.strokeStyle = "rgba(240,169,60,0.45)";
     ctx.lineWidth = 1.5;
     ctx.stroke();
     ctx.fillStyle = this.theme.text;
@@ -480,7 +480,7 @@ class SpaceMap {
       ctx.fillRect(h.x, h.y, h.w, h.h);
       ctx.strokeRect(h.x + 1, h.y + 1, h.w - 2, h.h - 2);
       const p = this.rects.find((r) => r.n === h.n._p && r.depth > 0);
-      if (p) { ctx.strokeStyle = "rgba(167,139,250,0.9)"; ctx.lineWidth = 1.5; ctx.strokeRect(p.x + 0.75, p.y + 0.75, p.w - 1.5, p.h - 1.5); }
+      if (p) { ctx.strokeStyle = "rgba(240,169,60,0.9)"; ctx.lineWidth = 1.5; ctx.strokeRect(p.x + 0.75, p.y + 0.75, p.w - 1.5, p.h - 1.5); }
     }
   }
 

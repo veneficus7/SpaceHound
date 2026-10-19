@@ -1,7 +1,7 @@
 VSVersionInfo(
   ffi=FixedFileInfo(
-    filevers=(1, 1, 0, 0),
-    prodvers=(1, 1, 0, 0),
+    filevers=(1, 2, 0, 0),
+    prodvers=(1, 2, 0, 0),
     mask=0x3f,
     flags=0x0,
     OS=0x40004,
@@ -12,14 +12,14 @@ VSVersionInfo(
   kids=[
     StringFileInfo([
       StringTable('040904B0', [
-        StringStruct('CompanyName', 'SpaceHound contributors'),
-        StringStruct('FileDescription', 'SpaceHound - disk space analyzer & cleaner'),
-        StringStruct('FileVersion', '1.1.0'),
+        StringStruct('CompanyName', 'Veneficus'),
+        StringStruct('FileDescription', 'SpaceHound by Veneficus'),
+        StringStruct('FileVersion', '1.2.0'),
         StringStruct('InternalName', 'SpaceHound'),
-        StringStruct('LegalCopyright', 'MIT License'),
+        StringStruct('LegalCopyright', 'Copyright (c) 2026 Veneficus. MIT License.'),
         StringStruct('OriginalFilename', 'SpaceHound.exe'),
         StringStruct('ProductName', 'SpaceHound'),
-        StringStruct('ProductVersion', '1.1.0')
+        StringStruct('ProductVersion', '1.2.0')
       ])
     ]),
     VarFileInfo([VarStruct('Translation', [1033, 1200])])

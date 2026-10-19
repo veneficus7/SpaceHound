@@ -32,7 +32,7 @@ const FX = (() => {
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     x = x ?? innerWidth / 2;
     y = y ?? innerHeight / 2.6;
-    const colors = ["#8b5cf6", "#22d3ee", "#f472b6", "#fbbf24", "#34d399", "#a78bfa", "#ffffff"];
+    const colors = ["#f0a93c", "#f6c477", "#e0603c", "#aaeefa", "#6cc2ae", "#efe3cc", "#e9c46a"];  // spice & sand
     const parts = Array.from({ length: count }, () => {
       const a = Math.random() * Math.PI * 2;
       const v = 4 + Math.random() * 9;

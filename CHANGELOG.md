@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.2.0 - 2026-10-19
+
+- SpaceHound is now branded **by Veneficus** (app, installer, Apps & features, exe details, reports)
+- New "Midnight Desert" design: warm lamp-lit dark theme with drifting dust and dunes, amber JetBrains Mono
+  readouts, wide Archivo headings, numbered sections, a terminal-style scan screen and a sand-toned light theme
+- Recoloured logo: a sand hound with amber sonar waves on an espresso tile
+- Warmer category, age and chart colours; HTML report restyled to match
+- About section links to the GitHub project
+
 ## 1.1.0 - 2026-10-19
 
 - New logo: a hound sniffing out "sonar" waves (icon, sidebar, scan screen)

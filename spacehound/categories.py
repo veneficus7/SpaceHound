@@ -2,19 +2,19 @@
 
 # (key, label, colour) - order matters, the index is stored in results.
 CATEGORIES = [
-    ("video", "Video", "#f0566e"),
-    ("image", "Images", "#f5a524"),
-    ("audio", "Audio", "#9b7bf7"),
-    ("document", "Documents", "#38bdf8"),
-    ("archive", "Archives", "#e07b39"),
-    ("diskimage", "Disk images & VMs", "#ec6bb5"),
-    ("code", "Code & dev", "#34c77b"),
-    ("app", "Apps & installers", "#5b84f7"),
-    ("system", "System & libraries", "#8b98ad"),
-    ("data", "Databases & data", "#2bbfae"),
-    ("game", "Game & 3D assets", "#a3e635"),
-    ("cache", "Caches & temp", "#fde047"),
-    ("other", "Other", "#6b7385"),
+    ("video", "Video", "#e0603c"),
+    ("image", "Images", "#f0a93c"),
+    ("audio", "Audio", "#c27fb5"),
+    ("document", "Documents", "#7fb8c9"),
+    ("archive", "Archives", "#b8834f"),
+    ("diskimage", "Disk images & VMs", "#d9758f"),
+    ("code", "Code & dev", "#6cb58a"),
+    ("app", "Apps & installers", "#8c9edb"),
+    ("system", "System & libraries", "#8a7d6b"),
+    ("data", "Databases & data", "#4fa89a"),
+    ("game", "Game & 3D assets", "#b5c25b"),
+    ("cache", "Caches & temp", "#d8c3a0"),
+    ("other", "Other", "#6e6252"),
 ]
 
 CATEGORY_KEYS = [c[0] for c in CATEGORIES]

@@ -230,8 +230,8 @@ Views.settings = {
       ${this.installCard(inst)}
       <h2 class="section">About</h2>
       <div class="card">
-        <div class="settings-row"><div><h4>SpaceHound ${U.esc(info.version)}</h4><p>${info.admin ? "Running as administrator." : "Running as a normal user."} Data folder: <span class="selectable">${U.esc(info.data_dir)}</span></p></div>
-          <div class="btn-group"><button class="btn sm" id="data">${icon("folder", "sm")}Open data folder</button>
+        <div class="settings-row"><div><h4>SpaceHound ${U.esc(info.version)} · by ${U.esc(info.author || "Veneficus")}</h4><p>${info.admin ? "Running as administrator." : "Running as a normal user."} Data folder: <span class="selectable">${U.esc(info.data_dir)}</span></p></div>
+          <div class="btn-group"><button class="btn sm" id="repo">${icon("external", "sm")}GitHub</button><button class="btn sm" id="data">${icon("folder", "sm")}Open data folder</button>
           ${!info.admin && info.platform === "win32" ? `<button class="btn sm" id="adm">${icon("shield", "sm")}Run as administrator</button>` : ""}</div></div>
       </div>
     </div>`;
@@ -255,6 +255,7 @@ Views.settings = {
       await save({ [key]: [...s[key], p] }); App.render();
     }));
     host.querySelector("#data").onclick = () => Actions.open(info.data_dir);
+    host.querySelector("#repo").onclick = () => API.open_external("https://github.com/veneficus7/SpaceHound");
     host.querySelectorAll("[data-inst]").forEach((b) => (b.onclick = () => Installer.run(b.dataset.inst, host)));
     const adm = host.querySelector("#adm");
     if (adm) adm.onclick = () => App.elevate();

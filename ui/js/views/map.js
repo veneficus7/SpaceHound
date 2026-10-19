@@ -82,7 +82,7 @@ Views.map = {
     const el = this.host.querySelector("#legend");
     const st = App.state.map;
     if (st.color === "age") {
-      el.innerHTML = `<span><i style="background:linear-gradient(90deg,#22d3ee,#8b5cf6,#f43f5e,#94603c);width:160px"></i></span>
+      el.innerHTML = `<span><i style="background:linear-gradient(90deg,#aaeefa,#6cc2ae,#f0a93c,#e0603c,#7a3a22);width:160px"></i></span>
         <span>new</span><span>→ 1 year</span><span>→ 7 years old</span>`;
     } else if (st.color === "folder") {
       el.innerHTML = `<span class="muted">Each top-level folder gets its own colour.</span>`;

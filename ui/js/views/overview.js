@@ -1,11 +1,12 @@
 /* Overview: welcome & drive picker, live "sonar" while scanning, bento dashboard after a scan. */
 
 const TONES = {
-  good: { a: "#34d399", b: "#22d3ee", glow: "rgba(52,211,153,.55)" },
-  info: { a: "#60a5fa", b: "#8b5cf6", glow: "rgba(96,165,250,.5)" },
-  warn: { a: "#fbbf24", b: "#fb923c", glow: "rgba(251,191,36,.45)" },
-  bad: { a: "#fb7185", b: "#f472b6", glow: "rgba(251,113,133,.5)" },
+  good: { a: "#6cc2ae", b: "#2f7d71", glow: "rgba(108,194,174,.45)" },
+  info: { a: "#aaeefa", b: "#7fb8c9", glow: "rgba(170,238,250,.35)" },
+  warn: { a: "#f6c477", b: "#f0a93c", glow: "rgba(240,169,60,.45)" },
+  bad: { a: "#f0a93c", b: "#e0603c", glow: "rgba(224,96,60,.5)" },
 };
+const WARM_AGE = ["#aaeefa", "#6cc2ae", "#e9c46a", "#f0a93c", "#e0603c", "#a8452b"];
 
 Views.overview = {
   title: "Overview",
@@ -49,9 +50,10 @@ Views.overview = {
   /* ------------------------------------------------------------ before the first scan */
   welcome() {
     const drives = App.drives.filter((d) => d.ready);
-    const cards = drives.map((d) => {
+    const cards = drives.map((d, n) => {
       const frac = d.total ? d.used / d.total : 0;
       return `<div class="card drive-card">
+        <div class="record-no">${String(n + 1).padStart(3, "0")} · ${U.esc(d.type)} drive</div>
         <div class="top"><div class="letter">${U.esc(d.path.slice(0, 2))}</div>
           <div style="flex:1;min-width:0"><div class="nm">${U.esc(d.label || "Local disk")}</div><div class="fs">${U.esc(d.fs)} · ${U.esc(d.type)} · ${U.bytes(d.total)}</div></div>
           ${Charts.ring(frac, { size: 58, stroke: 6 })}</div>
@@ -74,7 +76,8 @@ Views.overview = {
       <div class="hero fade-in">
         <div class="art"><div class="orbit"><div class="ring"><i class="dot"></i></div><div class="ring"><i class="dot"></i></div><div class="ring"><i class="dot"></i></div>
           <div class="core"><img src="logo-mark.svg" alt=""></div></div></div>
-        <h1>Let's sniff out what's<br><span class="grad-text">eating your disk.</span></h1>
+        <div class="boot">Loading SpaceHound… complete. <span>${drives.length} drive${drives.length === 1 ? "" : "s"} found · ${U.bytes(used)} in use</span></div>
+        <h1>What's eating<br><span class="grad-text">your disk?</span></h1>
         <p>You're using <b>${U.bytes(used)}</b> of <b>${U.bytes(total)}</b>. SpaceHound maps every folder in seconds, explains where the space went,
            and helps you win it back - safely.</p>
         <div class="btn-group">
@@ -107,7 +110,12 @@ Views.overview = {
         <div class="stat"><div class="label">${icon("pie", "sm")}Size found</div><div class="value" id="sn-bytes">0 B</div></div>
         <div class="stat"><div class="label">${icon("zap", "sm")}Speed</div><div class="value" id="sn-speed">-</div></div>
       </div>
-      <div class="sonar-path" id="sn-path">Starting…</div>
+      <div class="terminal" id="sn-term">
+        <div><b>&gt;</b> SpaceHound ${U.esc(App.info.version)} — a <i>${U.esc(App.info.author || "Veneficus")}</i> system</div>
+        <div><b>&gt;</b> target ........ <i>${U.esc(paths.join(", "))}</i></div>
+        <div><b>&gt;</b> status ........ <i id="sn-status">sniffing</i> <span class="cursor"></span></div>
+        <div class="ellipsis"><b>&gt;</b> <span id="sn-path">starting…</span></div>
+      </div>
       <button class="btn" id="sn-stop">${icon("stop", "sm")}Stop scanning</button>
     </div></div>`;
     host.querySelector("#sn-stop").onclick = () => { if (App.scan) API.cancel_job(App.scan.id); };
@@ -122,7 +130,8 @@ Views.overview = {
     set("sn-dirs", U.num(p.dirs || 0));
     set("sn-bytes", U.bytes(p.bytes || 0));
     set("sn-speed", st.elapsed > 0.3 ? `${U.num(Math.round((p.files || 0) / st.elapsed))}/s` : "-");
-    set("sn-path", p.phase === "finalizing" ? "Crunching the numbers…" : p.phase === "insights" ? "Looking for insights…" : p.current || "");
+    set("sn-path", p.phase === "finalizing" ? "crunching the numbers…" : p.phase === "insights" ? "looking for insights…" : p.current || "");
+    set("sn-status", p.phase === "finalizing" || p.phase === "insights" ? "analysing" : `sniffing · ${U.num(p.files || 0)} records`);
   },
 
   /* ------------------------------------------------------------ dashboard */
@@ -137,7 +146,7 @@ Views.overview = {
     const where = roots.length === 1 ? roots[0] : drive ? drive[0] + "\\" : "Your drive";
     const headline = roots.length > 1 ? `Your drives are ${Math.round((h.used / (h.total || 1)) * 100)}% full` : `${where} is ${Math.round((h.used / (h.total || 1)) * 100)}% full`;
     const parts = h.parts.map((p) => `<div class="part"><span class="k">${U.esc(p.label)}</span>
-      ${R.sizeBar(p.score / p.max, p.score / p.max > .66 ? "linear-gradient(90deg,#34d399,#22d3ee)" : p.score / p.max > .33 ? "linear-gradient(90deg,#fbbf24,#fb923c)" : "linear-gradient(90deg,#fb7185,#f472b6)")}
+      ${R.sizeBar(p.score / p.max, p.score / p.max > .66 ? "linear-gradient(90deg,#2f7d71,#6cc2ae)" : p.score / p.max > .33 ? "linear-gradient(90deg,#f0a93c,#f6c477)" : "linear-gradient(90deg,#a8452b,#e0603c)")}
       <span class="v">${p.score}/${p.max}</span></div>`).join("");
     const hasPrev = !!s.previous;
     return `<div class="card health span-7" style="--health-glow:${tone.glow}">
@@ -181,12 +190,12 @@ Views.overview = {
     const [sz, unit] = U.bytesParts(s.size);
     const freeU = usage.length === 1 ? usage[0][1] : null;
     const tiles = `
-      <div class="stat"><div class="glow" style="background:#8b5cf6"></div><div class="label">${icon("pie", "sm")}Scanned</div><div class="value">${sz}<small>${unit}</small></div><div class="foot">${U.esc(s.roots.join(", "))}</div></div>
-      <div class="stat"><div class="glow" style="background:#22d3ee"></div><div class="label">${icon("file", "sm")}Files</div><div class="value" data-count="${s.files}">0</div><div class="foot">${U.bytes(s.size / Math.max(1, s.files))} average</div></div>
-      <div class="stat"><div class="glow" style="background:#f472b6"></div><div class="label">${icon("folder", "sm")}Folders</div><div class="value" data-count="${s.dirs}">0</div><div class="foot">${s.denied ? `${U.num(s.denied)} not readable` : "all readable"}</div></div>
-      ${freeU ? `<div class="stat"><div class="glow" style="background:#34d399"></div><div class="label">${icon("drive", "sm")}Free space</div><div class="value">${U.bytesParts(freeU.free)[0]}<small>${U.bytesParts(freeU.free)[1]}</small></div><div class="foot">${U.pct(freeU.free / freeU.total)} of the drive</div></div>`
-               : `<div class="stat"><div class="glow" style="background:#34d399"></div><div class="label">${icon("cloud", "sm")}Online-only</div><div class="value">${U.bytes(s.cloud)}</div><div class="foot">no local space used</div></div>`}
-      <div class="stat"><div class="glow" style="background:#fbbf24"></div><div class="label">${icon("zap", "sm")}Scan time</div><div class="value">${U.duration(s.duration)}</div><div class="foot">${U.num(Math.round(s.files / Math.max(0.1, s.duration)))} files/s</div></div>`;
+      <div class="stat"><div class="glow" style="background:#f0a93c"></div><div class="label">${icon("pie", "sm")}Scanned</div><div class="value">${sz}<small>${unit}</small></div><div class="foot">${U.esc(s.roots.join(", "))}</div></div>
+      <div class="stat"><div class="glow" style="background:#e07b39"></div><div class="label">${icon("file", "sm")}Files</div><div class="value" data-count="${s.files}">0</div><div class="foot">${U.bytes(s.size / Math.max(1, s.files))} average</div></div>
+      <div class="stat"><div class="glow" style="background:#e0603c"></div><div class="label">${icon("folder", "sm")}Folders</div><div class="value" data-count="${s.dirs}">0</div><div class="foot">${s.denied ? `${U.num(s.denied)} not readable` : "all readable"}</div></div>
+      ${freeU ? `<div class="stat"><div class="glow" style="background:#6cc2ae"></div><div class="label">${icon("drive", "sm")}Free space</div><div class="value">${U.bytesParts(freeU.free)[0]}<small>${U.bytesParts(freeU.free)[1]}</small></div><div class="foot">${U.pct(freeU.free / freeU.total)} of the drive</div></div>`
+               : `<div class="stat"><div class="glow" style="background:#aaeefa"></div><div class="label">${icon("cloud", "sm")}Online-only</div><div class="value">${U.bytes(s.cloud)}</div><div class="foot">no local space used</div></div>`}
+      <div class="stat"><div class="glow" style="background:#e9c46a"></div><div class="label">${icon("zap", "sm")}Scan time</div><div class="value">${U.duration(s.duration)}</div><div class="foot">${U.num(Math.round(s.files / Math.max(0.1, s.duration)))} files/s</div></div>`;
     const insights = (s.insights || []).map((i, n) => `
       <div class="insight ${i.tone}">
         <div class="ii">${icon(i.icon in ICONS ? i.icon : "info")}</div>
@@ -204,7 +213,7 @@ Views.overview = {
     const files = s.top_files.slice(0, 8).map((f) => `<div class="lb" data-file="${U.esc(f.path)}" title="Show in File Explorer"><div class="n"><b>${U.esc(f.name)}</b><span>${U.esc(f.folder)}</span></div>
       <div class="s">${U.bytes(f.size)}</div>${R.sizeBar(f.size / maxFile, (App.cats[f.cat] || {}).color)}</div>`).join("");
     const age = Charts.columns(s.age.map((a, i) => ({ label: a.label, value: a.size, sub: `${U.num(a.count)} files`,
-      color: ["#22d3ee", "#38bdf8", "#8b5cf6", "#a855f7", "#f472b6", "#fb7185"][i] })), { height: 190 });
+      color: WARM_AGE[i] })), { height: 190 });
     const quick = [["sparkles", "Smart cleanup", "Caches, temp & Recycle Bin", "cleanup"], ["copy", "Duplicates", "Identical files", "duplicates"],
       ["code", "Dev junk", "Rebuildable project folders", "devjunk"], ["map", "Visual map", "See everything at once", "map"]]
       .map(([ic, t, d, go]) => `<div class="card feature lift" data-go="${go}" style="padding:14px"><div class="fi">${icon(ic)}</div><div><h4>${t}</h4><p>${d}</p></div></div>`).join("");

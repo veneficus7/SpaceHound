@@ -1,7 +1,8 @@
-"""Render the SpaceHound logo: a geometric hound head sniffing out "sonar" waves.
+"""Render the SpaceHound logo (by Veneficus): a sand-coloured hound sniffing out amber
+"sonar" waves on an espresso tile lit like a desert lamp.
 
 Writes assets/icon.ico, assets/icon.png, assets/logo.svg, ui/favicon.png and
-ui/logo-mark.svg (white mark for the sidebar). Needs Pillow.
+ui/logo-mark.svg (the mark alone, for the dark badges in the app). Needs Pillow.
 The same path data drives the PNG rendering and the SVG files.
 """
 
@@ -39,18 +40,20 @@ EAR = [
 ]
 # collar band across the neck (clipped to the head shape) and a hanging tag
 COLLAR = [("M", 200, 768), ("L", 700, 742), ("L", 700, 808), ("L", 200, 834), ("Z",)]
-COLLAR_COLOR = (34, 211, 238)
+COLLAR_COLOR = (170, 238, 250)   # spice blue
 TAG = (470, 846, 30)
-TAG_COLOR = (251, 191, 36)
+TAG_COLOR = (240, 169, 60)
 EYE = (606, 446, 25)        # cx, cy, r
 NOSE = (806, 518, 32)
 WAVE_C = (848, 520)
 WAVES = [(78, 30, 0.95), (138, 30, 0.7), (198, 30, 0.42)]   # radius, width, opacity
 WAVE_SPAN = 52              # degrees either side of horizontal
 
-C_A, C_B, C_C = (124, 58, 237), (79, 70, 229), (6, 182, 212)   # gradient stops
-EAR_COLOR = (200, 186, 255)
-DARK = (30, 27, 75)
+C_A, C_B, C_C = (58, 44, 32), (32, 25, 19), (18, 14, 11)   # tile gradient: lamp-lit espresso
+EAR_COLOR = (240, 169, 60)
+DARK = (23, 18, 15)
+SAND = (239, 227, 204)
+AMBER = (240, 169, 60)
 
 
 def shift(path):
@@ -143,8 +146,9 @@ def render(size_units=S):
     mask = squircle_mask(W, int(36 * k))
     # soft light from the top-left
     glow = Image.new("RGBA", (W, W), (0, 0, 0, 0))
-    ImageDraw.Draw(glow).ellipse((-0.35 * W, -0.6 * W, 0.8 * W, 0.4 * W), fill=(255, 255, 255, 34))
-    glow = glow.filter(ImageFilter.GaussianBlur(110 * k))
+    gx, gy = (WAVE_C[0] + DX) * k, WAVE_C[1] * k
+    ImageDraw.Draw(glow).ellipse((gx - 0.42 * W, gy - 0.42 * W, gx + 0.42 * W, gy + 0.42 * W), fill=AMBER + (70,))
+    glow = glow.filter(ImageFilter.GaussianBlur(120 * k))
     base = Image.alpha_composite(base, glow)
 
     # drop shadow of the mark
@@ -153,28 +157,29 @@ def render(size_units=S):
     sd.polygon(scale_pts(bezier_points(shift(HEAD)), k), fill=150)
     shadow = shadow.filter(ImageFilter.GaussianBlur(26 * k))
     shadow = ImageChops.offset(shadow, int(0 * k), int(18 * k))
-    dark = Image.new("RGBA", (W, W), (20, 10, 60, 0))
+    dark = Image.new("RGBA", (W, W), (0, 0, 0, 0))
     dark.putalpha(shadow)
     base = Image.alpha_composite(base, dark)
 
     d = ImageDraw.Draw(base)
     white = (255, 255, 255, 255)
+    sand = SAND + (255,)
     # sonar waves
     cx, cy = (WAVE_C[0] + DX) * k, WAVE_C[1] * k
     for r, w, a in WAVES:
         layer = Image.new("RGBA", (W, W), (0, 0, 0, 0))
         ld = ImageDraw.Draw(layer)
         rr, ww = r * k, w * k
-        ld.arc((cx - rr, cy - rr, cx + rr, cy + rr), start=-WAVE_SPAN, end=WAVE_SPAN, fill=(255, 255, 255, int(255 * a)), width=int(ww))
+        ld.arc((cx - rr, cy - rr, cx + rr, cy + rr), start=-WAVE_SPAN, end=WAVE_SPAN, fill=AMBER + (int(255 * a),), width=int(ww))
         for ang in (-WAVE_SPAN, WAVE_SPAN):  # round caps
             t = math.radians(ang)
             ex, ey = cx + (rr - ww / 2) * math.cos(t), cy + (rr - ww / 2) * math.sin(t)
-            ld.ellipse((ex - ww / 2, ey - ww / 2, ex + ww / 2, ey + ww / 2), fill=(255, 255, 255, int(255 * a)))
+            ld.ellipse((ex - ww / 2, ey - ww / 2, ex + ww / 2, ey + ww / 2), fill=AMBER + (int(255 * a),))
         base = Image.alpha_composite(base, layer)
     d = ImageDraw.Draw(base)
     # head, ear, eye, nose
     head_pts = scale_pts(bezier_points(shift(HEAD)), k)
-    d.polygon(head_pts, fill=white)
+    d.polygon(head_pts, fill=sand)
     # collar: band clipped to the head silhouette
     head_mask = Image.new("L", (W, W), 0)
     ImageDraw.Draw(head_mask).polygon(head_pts, fill=255)
@@ -194,6 +199,12 @@ def render(size_units=S):
     ex, ey, er = (EYE[0] + DX) * k, EYE[1] * k, EYE[2] * k
     d.ellipse((ex + er * 0.15, ey - er * 0.55, ex + er * 0.55, ey - er * 0.15), fill=white)
 
+    # thin amber rim so the dark tile still reads on a dark taskbar
+    rim = ImageChops.subtract(mask, squircle_mask(W, int(36 * k) + int(7 * k)))
+    rim_layer = Image.new("RGBA", (W, W), AMBER + (0,))
+    rim_layer.putalpha(rim.point(lambda v: int(v * 0.4)))
+    base = Image.alpha_composite(base, rim_layer)
+
     out = Image.new("RGBA", (W, W), (0, 0, 0, 0))
     out.paste(base, (0, 0), mask)
     return out.resize((size_units, size_units), Image.LANCZOS)
@@ -209,18 +220,18 @@ def write_svgs():
         x0, y0 = cx + r * math.cos(-t), cy + r * math.sin(-t)
         x1, y1 = cx + r * math.cos(t), cy + r * math.sin(t)
         arcs.append((f"M {x0:.1f} {y0:.1f} A {r} {r} 0 0 1 {x1:.1f} {y1:.1f}", w, a))
-    wave_svg = "".join(f'<path d="{p}" fill="none" stroke="#fff" stroke-opacity="{a}" stroke-width="{w}" stroke-linecap="round"/>' for p, w, a in arcs)
+    wave_svg = "".join(f'<path d="{p}" fill="none" stroke="#f0a93c" stroke-opacity="{a}" stroke-width="{w}" stroke-linecap="round"/>' for p, w, a in arcs)
     collar = svg_path(shift(COLLAR))
     tx, ty, tr = TAG
     body = f"""{wave_svg}
-<path d="{head}" fill="#fff"/>
-<path d="{collar}" fill="#22d3ee" clip-path="url(#head)"/><circle cx="{tx + DX}" cy="{ty}" r="{tr}" fill="#fbbf24"/>
-<path d="{ear}" fill="#c8baff"/>
-<circle cx="{ex + DX}" cy="{ey}" r="{er}" fill="#1e1b4b"/><circle cx="{nx + DX}" cy="{ny}" r="{nr}" fill="#1e1b4b"/>"""
+<path d="{head}" fill="#efe3cc"/>
+<path d="{collar}" fill="#aaeefa" clip-path="url(#head)"/><circle cx="{tx + DX}" cy="{ty}" r="{tr}" fill="#f0a93c"/>
+<path d="{ear}" fill="#f0a93c"/>
+<circle cx="{ex + DX}" cy="{ey}" r="{er}" fill="#17120f"/><circle cx="{nx + DX}" cy="{ny}" r="{nr}" fill="#17120f"/>"""
     clip = f'<clipPath id="head"><path d="{head}"/></clipPath>'
     logo = f"""<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
-<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7c3aed"/><stop offset=".5" stop-color="#4f46e5"/><stop offset="1" stop-color="#06b6d4"/></linearGradient>{clip}</defs>
-<rect x="36" y="36" width="952" height="952" rx="230" fill="url(#g)"/>
+<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3a2c20"/><stop offset=".5" stop-color="#201913"/><stop offset="1" stop-color="#120e0b"/></linearGradient><radialGradient id="lamp" cx="{cx}" cy="{cy}" r="430" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#f0a93c" stop-opacity=".28"/><stop offset="1" stop-color="#f0a93c" stop-opacity="0"/></radialGradient>{clip}</defs>
+<rect x="36" y="36" width="952" height="952" rx="230" fill="url(#g)"/><rect x="36" y="36" width="952" height="952" rx="230" fill="url(#lamp)"/><rect x="39.5" y="39.5" width="945" height="945" rx="227" fill="none" stroke="#f0a93c" stroke-opacity=".4" stroke-width="7"/>
 {body}
 </svg>
 """
@@ -244,14 +255,14 @@ def main():
     img.resize((256, 256), Image.LANCZOS).save(os.path.join(ROOT, "assets", "icon.ico"), sizes=sizes)
     write_svgs()
     # preview sheet: big + small sizes on dark and light backgrounds
-    sheet = Image.new("RGBA", (980, 560), (16, 18, 30, 255))
+    sheet = Image.new("RGBA", (980, 560), (18, 14, 11, 255))
     sheet.paste(img.resize((420, 420), Image.LANCZOS), (30, 70), img.resize((420, 420), Image.LANCZOS))
     x = 500
     for sz in (128, 64, 48, 32, 24, 16):
         small = img.resize((sz, sz), Image.LANCZOS)
         sheet.paste(small, (x, 120), small)
         x += sz + 22
-    light = Image.new("RGBA", (460, 200), (240, 242, 248, 255))
+    light = Image.new("RGBA", (460, 200), (241, 231, 214, 255))
     lx = 20
     for sz in (128, 48, 32, 16):
         small = img.resize((sz, sz), Image.LANCZOS)

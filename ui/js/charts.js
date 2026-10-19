@@ -44,7 +44,7 @@ const Charts = (() => {
       const h = Math.max(it.value > 0 ? 2 : 0, (it.value / max) * (height - 46));
       const tip = `<b>${U.esc(it.label)}</b><div class="tp">${fmt(it.value)}${it.sub ? " · " + U.esc(it.sub) : ""}</div>`;
       return `<g data-tip="${U.esc(tip)}">
-        <rect x="${i * w + w * 0.2}%" y="${height - 26 - h}" width="${w * 0.6}%" height="${h}" rx="8" fill="url(#${uid}${i})" style="filter:drop-shadow(0 0 10px ${it.color || "rgba(139,92,246,.5)"}55)"/>
+        <rect x="${i * w + w * 0.2}%" y="${height - 26 - h}" width="${w * 0.6}%" height="${h}" rx="8" fill="url(#${uid}${i})" style="filter:drop-shadow(0 0 10px ${it.color || "rgba(240,169,60,.5)"}55)"/>
         <text x="${i * w + w / 2}%" y="${height - 31 - h}" text-anchor="middle" style="font-size:11px;fill:var(--text-2);font-weight:600">${it.value ? fmt(it.value) : ""}</text>
         <text x="${i * w + w / 2}%" y="${height - 8}" text-anchor="middle">${U.esc(it.label)}</text>
       </g>`;
@@ -66,7 +66,7 @@ const Charts = (() => {
   }
 
   /* points: [{t, v}] - sparkline / area chart */
-  function area(points, { height = 160, color = "#8b5cf6" } = {}) {
+  function area(points, { height = 160, color = "#f0a93c" } = {}) {
     if (points.length < 2) return `<div class="muted small" style="padding:30px 0;text-align:center">Scan again later to see a trend line.</div>`;
     const W = 1000, H = height, pad = 26;
     const t0 = points[0].t, t1 = points[points.length - 1].t || t0 + 1;

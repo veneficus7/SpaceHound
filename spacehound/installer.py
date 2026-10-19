@@ -70,7 +70,7 @@ def _make_shortcut(lnk, target):
         f"$s.TargetPath = {_ps_quote(target)}; "
         f"$s.WorkingDirectory = {_ps_quote(os.path.dirname(target))}; "
         f"$s.IconLocation = {_ps_quote(target + ',0')}; "
-        "$s.Description = 'SpaceHound - find out what is eating your disk'; "
+        "$s.Description = 'SpaceHound by Veneficus - find out what is eating your disk'; "
         "$s.Save()"
     )
     subprocess.run(["powershell", "-NoProfile", "-NonInteractive", "-ExecutionPolicy", "Bypass", "-Command", script],
@@ -83,7 +83,7 @@ def _register(exe):
     values = {
         "DisplayName": APP_NAME,
         "DisplayVersion": __version__,
-        "Publisher": "SpaceHound contributors",
+        "Publisher": "Veneficus",
         "DisplayIcon": f'"{exe}",0',
         "InstallLocation": os.path.dirname(exe),
         "UninstallString": f'"{exe}" --uninstall',

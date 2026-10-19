@@ -5,7 +5,7 @@ import os
 import sys
 import time
 
-from . import APP_NAME, __version__
+from . import APP_NAME, AUTHOR, __version__
 from .util import data_dir, fmt_size, resource_path
 
 
@@ -16,7 +16,7 @@ def _cli_report(paths, top):
 
     job = Job(0, "scan")
     t0 = time.time()
-    print(f"{APP_NAME} {__version__} - scanning {', '.join(paths)} …", flush=True)
+    print(f"{APP_NAME} {__version__} by {AUTHOR} - scanning {', '.join(paths)} …", flush=True)
     tree = scan(job, paths, threads=max(4, min(16, os.cpu_count() or 8)))
     root = tree.root
     print(f"\n{fmt_size(root.size)} in {root.nfiles:,} files / {root.ndirs:,} folders "
@@ -148,7 +148,7 @@ def main(argv=None):
         x=x,
         y=y,
         min_size=(1000, 640),
-        background_color="#0b0e14",
+        background_color="#120e0b",
         text_select=False,
     )
     api._set_window(window)

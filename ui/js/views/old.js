@@ -10,7 +10,7 @@ Views.old = {
     const st = (App.state.old = App.state.old || { tab: "folders", days: 365, min: 100 << 20, fmin: 500 << 20, system: false });
     const s = App.summary;
     const age = Charts.columns(s.age.map((a, i) => ({ label: a.label, value: a.size, sub: `${U.num(a.count)} files`,
-      color: ["#22d3ee", "#38bdf8", "#8b5cf6", "#a855f7", "#f43f5e", "#b45309"][i] })), { height: 150 });
+      color: ["#aaeefa", "#6cc2ae", "#e9c46a", "#f0a93c", "#e0603c", "#a8452b"][i] })), { height: 150 });
     host.innerHTML = `<div class="page fade-in">
       <div class="card"><div class="card-head"><h3>${icon("clock", "sm")}Space by last modification</h3><span class="sub">How much of your data is actually in use?</span></div>
         <div class="card-body">${age}</div></div>

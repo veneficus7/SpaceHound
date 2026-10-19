@@ -104,8 +104,8 @@ const App = {
   renderSidebar() {
     const nav = document.getElementById("nav");
     let html = "";
-    for (const [group, items] of NAV) {
-      html += `<div class="nav-group">${group}</div>`;
+    NAV.forEach(([group, items], gi) => {
+      html += `<div class="nav-group"><b>0${gi + 1}</b>${group}</div>`;
       for (const id of items) {
         const v = Views[id];
         if (!v) continue;
@@ -114,8 +114,8 @@ const App = {
         html += `<div class="nav-item ${this.view === id ? "active" : ""} ${dim ? "disabled" : ""}" data-nav="${id}">
           ${icon(v.icon)}<span>${U.esc(v.title)}</span>${badge ? `<span class="count">${badge}</span>` : ""}</div>`;
       }
-    }
-    html += `<div class="nav-group">App</div><div class="nav-item ${this.view === "settings" ? "active" : ""}" data-nav="settings">${icon("settings")}<span>Settings</span></div>`;
+    });
+    html += `<div class="nav-group"><b>0${NAV.length + 1}</b>App</div><div class="nav-item ${this.view === "settings" ? "active" : ""}" data-nav="settings">${icon("settings")}<span>Settings</span></div>`;
     nav.innerHTML = html;
     nav.querySelectorAll("[data-nav]").forEach((el) => (el.onclick = () => this.go(el.dataset.nav)));
     const foot = document.getElementById("side-foot");
@@ -125,8 +125,8 @@ const App = {
       ${h ? `<div class="mini-drive" id="mini-drive" title="Disk health">${Charts.ring(h.used / (h.total || 1), { size: 36, stroke: 4 })}
         <div style="min-width:0"><div class="t">${U.bytes(h.free)} free</div><div class="s">Health ${h.score}/100 · ${U.esc(h.label)}</div></div></div>` : ""}
       ${freed > 0 ? `<div class="freed-box"><b>${U.bytes(freed)}</b><span>freed with SpaceHound</span></div>` : ""}
-      ${this.info && !this.info.admin && this.info.platform === "win32" ? `<button class="btn sm" id="elevate" title="See system folders that need admin rights">${icon("shield", "sm")}Run as administrator</button>`
-        : `<div class="muted small" style="padding:0 2px">v${this.info ? this.info.version : ""} · Administrator</div>`}`;
+      ${this.info && !this.info.admin && this.info.platform === "win32" ? `<button class="btn sm" id="elevate" title="See system folders that need admin rights">${icon("shield", "sm")}Run as administrator</button>` : ""}
+      <div class="credit">SpaceHound v${this.info ? this.info.version : ""}${this.info && this.info.admin ? " · admin" : ""}<br>A <b>${U.esc((this.info && this.info.author) || "Veneficus")}</b> system</div>`;
     const el = document.getElementById("elevate");
     if (el) el.onclick = () => this.elevate();
     const md = document.getElementById("mini-drive");
@@ -221,8 +221,9 @@ const App = {
     if (this.view !== "overview") this.go("overview");
     else this.render();
     try {
-      await waitJob(id, (st) => { this.scan.status = st; this.updateScanBanner(); }, 200);
-      if (this.scan && this.scan.id !== id) return;
+      // an older scan that was replaced keeps polling until its cancel lands: ignore it
+      await waitJob(id, (st) => { if (this.scan && this.scan.id === id) { this.scan.status = st; this.updateScanBanner(); } }, 200);
+      if (!this.scan || this.scan.id !== id) return;
       this.summary = await API.scan_summary();
       this.state = {};
       this.scan = null;
@@ -231,7 +232,7 @@ const App = {
       UI.toast(`Scan complete: <b>${U.bytes(this.summary.size)}</b> in ${U.num(this.summary.files)} files (${U.duration(this.summary.duration)}).`, "good");
       this.go("overview");
     } catch (err) {
-      if (this.scan && this.scan.id !== id) return;
+      if (!this.scan || this.scan.id !== id) return;
       this.scan = null;
       this.hideScanBanner();
       if (!err.cancelled) UI.toast(U.esc(err.message), "bad", 7000);

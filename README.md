@@ -3,6 +3,7 @@
 </p>
 
 <h1 align="center">SpaceHound</h1>
+<p align="center"><sub>BY VENEFICUS</sub></p>
 
 <p align="center">
   <b>Find out what's eating your disk - and get the space back, safely.</b><br>
@@ -12,7 +13,7 @@
 <p align="center">
   <img alt="Windows 10/11" src="https://img.shields.io/badge/Windows-10%20%7C%2011-0078D6">
   <img alt="Python 3.10+" src="https://img.shields.io/badge/Python-3.10%2B-3776AB">
-  <img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-8b5cf6">
+  <img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-f0a93c">
   <a href="https://github.com/veneficus7/SpaceHound/actions/workflows/build.yml"><img alt="build" src="https://github.com/veneficus7/SpaceHound/actions/workflows/build.yml/badge.svg"></a>
 </p>
 
@@ -55,7 +56,8 @@ duplicates, caches, forgotten project builds, old installers, giant backups you 
 - **Empty folders**, **move to another drive**, **rescan a single folder**, **CSV / HTML reports**.
 
 **Feels great**
-- "Deep space" design: aurora background, glass panels, Space Grotesk display type, dark & light themes.
+- "Midnight Desert" design: lamp-lit warm dark theme with drifting dust, amber monospace readouts, wide Archivo headings,
+  a terminal-style scan screen and a sand-toned light theme.
 - **Command palette** (<kbd>Ctrl</kbd>+<kbd>K</kbd>) to jump anywhere, start scans or run actions from the keyboard.
 - Animated counters, staggered cards, a glowing health gauge - and confetti when you win space back.
 
@@ -155,8 +157,11 @@ Run the tests with `python -m unittest discover -s tests -v`.
 
 ## Credits
 
-UI headings use [Space Grotesk](https://github.com/floriankarsten/space-grotesk) (SIL Open Font License, see `ui/fonts/OFL.txt`).
+Designed and built by **Veneficus**.
+
+Fonts: [Archivo](https://github.com/Omnibus-Type/Archivo) (headings) and [JetBrains Mono](https://github.com/JetBrains/JetBrainsMono) (readouts),
+both under the SIL Open Font License - see `ui/fonts/OFL-Archivo.txt` and `ui/fonts/OFL-JetBrainsMono.txt`.
 
 ## License
 
-[MIT](LICENSE)
+[MIT](LICENSE) © 2026 Veneficus
