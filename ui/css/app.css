@@ -147,7 +147,7 @@ svg.i.xl { width: 30px; height: 30px; }
 .brand-logo { width: 38px; height: 38px; border-radius: 12px; flex: none; position: relative;
   background: var(--grad); display: grid; place-items: center; box-shadow: 0 8px 26px var(--accent-glow), inset 0 1px 0 rgba(255,255,255,.35); }
 .brand-logo::after { content: ""; position: absolute; inset: -6px; border-radius: 16px; background: var(--grad); filter: blur(14px); opacity: .35; z-index: -1; }
-.brand-logo svg { width: 24px; height: 24px; }
+.brand-logo img { width: 30px; height: auto; display: block; margin-top: 1px; }
 .brand-name { font: 700 18px/1.1 var(--font-display); letter-spacing: -0.02em; }
 .brand-sub { color: var(--text-3); font-size: 11.5px; }
 #nav { flex: 1; overflow-y: auto; padding: 4px 12px 10px; }
@@ -391,7 +391,7 @@ tr:hover .row-actions, tr.sel .row-actions { opacity: 1; }
 .orbit .ring:nth-child(1) { animation: spin 30s linear infinite; }
 .orbit .ring:nth-child(1) .dot { background: var(--accent-4); box-shadow: 0 0 14px var(--accent-4); }
 .orbit .core { position: absolute; inset: 96px; border-radius: 50%; background: var(--grad); box-shadow: 0 0 60px var(--accent-glow), inset 0 2px 10px rgba(255,255,255,.4); display: grid; place-items: center; }
-.orbit .core svg { width: 30px; height: 30px; }
+.orbit .core img { width: 40px; height: auto; display: block; }
 @keyframes spin { to { transform: rotate(360deg); } }
 
 .bento { display: grid; gap: 16px; grid-template-columns: repeat(12, minmax(0, 1fr)); }
@@ -479,7 +479,7 @@ svg.donut path:hover { opacity: .85; }
 .sonar .pulse:nth-of-type(2) { animation-delay: 1.2s; }
 @keyframes pulse { from { inset: 46%; opacity: 1; } to { inset: 0%; opacity: 0; } }
 .sonar .core { position: absolute; inset: 42%; border-radius: 50%; background: var(--grad); display: grid; place-items: center; box-shadow: 0 0 40px var(--accent-glow); z-index: 2; }
-.sonar .core svg { width: 26px; height: 26px; }
+.sonar .core img { width: 36px; height: auto; display: block; }
 .sonar .blip { position: absolute; width: 8px; height: 8px; border-radius: 50%; background: var(--cyan); box-shadow: 0 0 12px var(--cyan); animation: blip 2.2s ease-out forwards; z-index: 1; }
 .sonar .blip.v { background: var(--accent-4); box-shadow: 0 0 12px var(--accent-4); }
 @keyframes blip { 0% { transform: scale(0); opacity: 0; } 15% { transform: scale(1.4); opacity: 1; } 100% { transform: scale(.6); opacity: 0; } }

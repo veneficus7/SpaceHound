@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.1.0 - 2026-10-19
+
+- New logo: a hound sniffing out "sonar" waves (icon, sidebar, scan screen)
+- Built-in installer: `SpaceHound.exe --install` (or the Install button) adds SpaceHound to the
+  Start menu / Windows search and to Apps & features; `--uninstall` removes it again
+- "Update installed copy" and "Open installed app" when running a newer portable download
+- CI uses current GitHub Actions versions
+
 ## 1.0.0 - 2026-10-18
 
 First release.

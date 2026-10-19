@@ -52,6 +52,31 @@ def _run_browser(api, port, open_browser=True):
         server.shutdown()
 
 
+def _install_cli(args):
+    from . import installer
+
+    try:
+        if args.uninstall:
+            if not args.quiet and not installer.message_box(
+                    "Uninstall SpaceHound?\n\nYour scan history and settings are kept.", yes_no=True):
+                return 1
+            installer.uninstall()
+            if not args.quiet:
+                installer.message_box("SpaceHound was uninstalled.")
+            return 0
+        installer.install(desktop=args.desktop)
+        print(f"Installed to {installer.INSTALLED_EXE}")
+        if not args.quiet:
+            installer.message_box("SpaceHound is installed.\n\nFind it any time by typing \"SpaceHound\" in the Start menu.")
+        return 0
+    except Exception as exc:
+        if args.quiet:
+            print(f"Failed: {exc}", file=sys.stderr)
+        else:
+            installer.message_box(f"Something went wrong:\n\n{exc}")
+        return 1
+
+
 def _redirect_output_if_windowed():
     """A windowed .exe has no console: send stdout/stderr to a log file instead of nowhere."""
     if sys.stdout is not None and sys.stderr is not None:
@@ -76,8 +101,15 @@ def main(argv=None):
     parser.add_argument("--scan", nargs="+", metavar="PATH", help="scan from the command line and print a report")
     parser.add_argument("--top", type=int, default=15, help="rows per section in the CLI report")
     parser.add_argument("--debug", action="store_true", help="enable WebView developer tools")
+    parser.add_argument("--install", action="store_true", help="install for this user (Start menu + Apps & features)")
+    parser.add_argument("--desktop", action="store_true", help="with --install: also add a desktop shortcut")
+    parser.add_argument("--uninstall", action="store_true", help="remove the installed copy and its shortcuts")
+    parser.add_argument("--quiet", action="store_true", help="no dialogs for --install / --uninstall")
     parser.add_argument("path", nargs="?", help="folder or drive to scan right away")
     args = parser.parse_args(argv)
+
+    if args.install or args.uninstall:
+        return _install_cli(args)
 
     if args.scan:
         _cli_report(args.scan, args.top)

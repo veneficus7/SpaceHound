@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/icon.png" width="96" alt="SpaceHound icon">
+  <img src="assets/icon.png" width="112" alt="SpaceHound logo - a hound sniffing out sonar waves">
 </p>
 
 <h1 align="center">SpaceHound</h1>
@@ -83,8 +83,13 @@ duplicates, caches, forgotten project builds, old installers, giant backups you 
 
 ## Download
 
-Grab **`SpaceHound.exe`** from the [Releases](https://github.com/veneficus7/SpaceHound/releases/latest) page - a single portable file, no installer.
+Grab **`SpaceHound.exe`** from the [Releases](https://github.com/veneficus7/SpaceHound/releases/latest) page - a single file you can run right away.
 It needs the Microsoft Edge **WebView2** runtime, which is already part of Windows 11 (and most Windows 10 installs).
+
+**Install it** (optional, no admin rights): click **Install** on the welcome screen or in *Settings*, or run
+`SpaceHound.exe --install`. SpaceHound is copied to `%LOCALAPPDATA%\Programs\SpaceHound`, appears in the Start menu
+and Windows search, and is listed in *Settings › Apps* where you can uninstall it (`--uninstall` works too).
+Running a newer download later offers to update the installed copy.
 
 > Tip: for a complete picture of system folders, click **Run as administrator** in the sidebar.
 

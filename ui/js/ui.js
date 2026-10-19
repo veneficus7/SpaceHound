@@ -301,6 +301,42 @@ const Actions = {
   },
 };
 
+/* install / update / uninstall the app itself (Settings + welcome screen) */
+const Installer = {
+  async run(action, host) {
+    try {
+      if (action === "install" || action === "update" || action === "desktop") {
+        const box = host && host.querySelector("#inst-desk");
+        await API.install_app(action === "desktop" || !!(box && box.checked));
+        FX.confetti();
+        const choice = await UI.modal({
+          title: action === "update" ? "Installed copy updated" : "SpaceHound is installed", icon: "check",
+          body: `<p>Type <b>SpaceHound</b> in the Windows search bar or the Start menu to open it any time.
+                 It is also listed in <i>Settings › Apps</i>, where you can uninstall it.</p>`,
+          actions: action === "desktop" ? [{ label: "OK", kind: "primary" }]
+            : [{ label: "Keep this window", kind: "ghost", value: "stay" }, { label: "Open installed app", kind: "primary", icon: "external", value: "open" }],
+        });
+        if (choice === "open") API.launch_installed();
+      } else if (action === "open") {
+        API.launch_installed();
+      } else if (action === "uninstall") {
+        const ok = await UI.confirm({
+          title: "Uninstall SpaceHound?", danger: true, icon: "trash",
+          message: "Removes the app, its Start menu shortcut and its Apps &amp; features entry. Your scan history and settings are kept.",
+          confirmLabel: "Uninstall",
+        });
+        if (!ok) return;
+        await API.uninstall_app();
+        UI.toast("SpaceHound was uninstalled - this window will close.", "info");
+      }
+      App.info.install = await API.install_status();
+      if (App.view === "settings" || App.view === "overview") App.render();
+    } catch (err) {
+      UI.toast(U.esc(err.message || String(err)), "bad", 7000);
+    }
+  },
+};
+
 /* small rendering helpers shared by views */
 const R = {
   catBadge(cat) {

@@ -32,6 +32,8 @@ Views.overview = {
     }));
     const pick = host.querySelector("#pick-folder");
     if (pick) pick.onclick = () => App.chooseFolder();
+    const inst = host.querySelector("#install-now");
+    if (inst) inst.onclick = () => Installer.run("install", host);
     const all = host.querySelector("#scan-all");
     if (all) all.onclick = () => App.startScan(App.drives.filter((d) => d.ready && d.type === "fixed").map((d) => d.path));
     host.querySelectorAll("[data-insight]").forEach((b) => (b.onclick = () => {
@@ -71,7 +73,7 @@ Views.overview = {
     return `
       <div class="hero fade-in">
         <div class="art"><div class="orbit"><div class="ring"><i class="dot"></i></div><div class="ring"><i class="dot"></i></div><div class="ring"><i class="dot"></i></div>
-          <div class="core">${icon("search")}</div></div></div>
+          <div class="core"><img src="logo-mark.svg" alt=""></div></div></div>
         <h1>Let's sniff out what's<br><span class="grad-text">eating your disk.</span></h1>
         <p>You're using <b>${U.bytes(used)}</b> of <b>${U.bytes(total)}</b>. SpaceHound maps every folder in seconds, explains where the space went,
            and helps you win it back - safely.</p>
@@ -81,6 +83,10 @@ Views.overview = {
           <span class="muted small" style="margin-left:6px">or press <span class="kbd">Ctrl</span> <span class="kbd">K</span></span>
         </div>
       </div>
+      ${App.info.install && App.info.install.can_install && !App.info.install.installed ? `
+      <div class="notice info fade-in" style="margin-top:16px;align-items:center">${icon("download")}
+        <div class="t" style="flex:1"><b style="color:var(--text)">Keep SpaceHound handy.</b> Install it to find it in Windows search and the Start menu - takes a second, no admin rights needed.</div>
+        <button class="btn sm primary" id="install-now">${icon("download", "sm")}Install</button></div>` : ""}
       <h2 class="section">${icon("drive")}Your drives</h2>
       <div class="grid g3 stagger">${cards}</div>
       <h2 class="section">${icon("sparkles")}What SpaceHound can do</h2>
@@ -92,7 +98,7 @@ Views.overview = {
     const paths = (App.scan && App.scan.paths) || [];
     host.innerHTML = `<div class="sonar-page fade-in"><div class="sonar-wrap">
       <div class="sonar" id="sonar"><div class="grid-ring"></div><div class="grid-ring"></div><div class="grid-ring"></div><div class="cross"></div>
-        <div class="sweep"></div><i class="pulse"></i><i class="pulse"></i><div class="core">${icon("search")}</div></div>
+        <div class="sweep"></div><i class="pulse"></i><i class="pulse"></i><div class="core"><img src="logo-mark.svg" alt=""></div></div>
       <h1 class="sonar-title">Sniffing through <span class="grad-text">${U.esc(paths.join(", "))}</span></h1>
       <p class="sonar-sub">Mapping every folder and file - this usually takes a few seconds.</p>
       <div class="sonar-stats">

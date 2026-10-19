@@ -176,9 +176,33 @@ Views.settings = {
   title: "Settings",
   icon: "settings",
 
+  installCard(st) {
+    if (!st) return "";
+    let body;
+    if (st.running_installed) {
+      body = `<div class="settings-row"><div><h4>${icon("check", "sm")} Installed</h4><p>SpaceHound is in your Start menu - type “SpaceHound” in Windows search to open it.
+          <span class="selectable">${U.esc(st.path)}</span></p></div>
+        <div class="btn-group">${st.desktop ? "" : `<button class="btn sm" data-inst="desktop">${icon("plus", "sm")}Desktop shortcut</button>`}
+          <button class="btn sm danger-ghost" data-inst="uninstall">${icon("trash", "sm")}Uninstall</button></div></div>`;
+    } else if (st.can_install && st.installed) {
+      body = `<div class="settings-row"><div><h4>Installed copy found</h4><p>You're running a portable copy. Open the installed one, or update it with this version.</p></div>
+        <div class="btn-group"><button class="btn sm" data-inst="update">${icon("refresh", "sm")}Update installed copy</button>
+          <button class="btn sm primary" data-inst="open">${icon("external", "sm")}Open installed</button></div></div>`;
+    } else if (st.can_install) {
+      body = `<div class="settings-row"><div><h4>Install SpaceHound</h4><p>Adds SpaceHound to the Start menu and Windows search, and to Apps &amp; features so it can be uninstalled normally. No admin rights needed.</p>
+          <label class="row small text-2" style="gap:8px;margin-top:10px"><span class="toggle"><input type="checkbox" id="inst-desk"><span></span></span>Also add a desktop shortcut</label></div>
+        <button class="btn primary" data-inst="install">${icon("download", "sm")}Install</button></div>`;
+    } else {
+      body = `<div class="settings-row"><div><h4>Running from source</h4><p>Build the .exe with <code>build.ps1</code>, then use its Install button (or run <code>SpaceHound.exe --install</code>).</p></div><div></div></div>`;
+    }
+    return `<h2 class="section">Installation</h2><div class="card">${body}</div>`;
+  },
+
   async render(host) {
     const s = await API.get_settings();
     const info = App.info;
+    let inst = null;
+    try { inst = await API.install_status(); } catch (_) {}
     const list = (key, items) => `<div class="list-input" data-list="${key}">${items.map((p, i) => `<div class="li"><span>${U.esc(p)}</span><button class="btn ghost sm icon" data-rm="${key}:${i}">${icon("x", "sm")}</button></div>`).join("") || `<div class="muted small">None</div>`}
       <div><button class="btn sm" data-add="${key}">${icon("plus", "sm")}Add folder</button></div></div>`;
     host.innerHTML = `<div class="page fade-in" style="max-width:900px">
@@ -203,6 +227,7 @@ Views.settings = {
       <div class="card">
         <div class="settings-row" style="grid-template-columns:1fr"><div><h4>Protected folders</h4><p>SpaceHound refuses to delete or move anything inside these. Windows, Program Files and your main user folders are always protected.</p></div>${list("protected", s.protected)}</div>
       </div>
+      ${this.installCard(inst)}
       <h2 class="section">About</h2>
       <div class="card">
         <div class="settings-row"><div><h4>SpaceHound ${U.esc(info.version)}</h4><p>${info.admin ? "Running as administrator." : "Running as a normal user."} Data folder: <span class="selectable">${U.esc(info.data_dir)}</span></p></div>
@@ -230,6 +255,7 @@ Views.settings = {
       await save({ [key]: [...s[key], p] }); App.render();
     }));
     host.querySelector("#data").onclick = () => Actions.open(info.data_dir);
+    host.querySelectorAll("[data-inst]").forEach((b) => (b.onclick = () => Installer.run(b.dataset.inst, host)));
     const adm = host.querySelector("#adm");
     if (adm) adm.onclick = () => App.elevate();
   },

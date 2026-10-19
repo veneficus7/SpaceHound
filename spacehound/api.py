@@ -106,6 +106,7 @@ class Api:
             "data_dir": data_dir(),
             "freed_total": self._activity.get("freed", 0),
             "start_paths": self._take_start_paths(),
+            "install": self.install_status(),
         }
 
     def _take_start_paths(self):
@@ -155,6 +156,33 @@ class Api:
                 threading.Timer(0.5, lambda: os._exit(0)).start()
             return True
         return False
+
+    # ------------------------------------------------------------------ install
+    def install_status(self):
+        from . import installer
+        return installer.status()
+
+    def install_app(self, desktop=False):
+        from . import installer
+        return installer.install(bool(desktop))
+
+    def uninstall_app(self):
+        from . import installer
+        res = installer.uninstall()
+        if self._window is not None and not res["installed"] and installer.current_exe() and \
+                norm(installer.current_exe()) == norm(installer.INSTALLED_EXE):
+            threading.Timer(0.8, self._window.destroy).start()  # the installed copy removes itself on exit
+        return res
+
+    def launch_installed(self):
+        """Open the installed copy and close this (portable) window."""
+        from . import installer
+        if not os.path.exists(installer.INSTALLED_EXE):
+            return False
+        subprocess.Popen([installer.INSTALLED_EXE], close_fds=True)
+        if self._window is not None:
+            threading.Timer(0.6, self._window.destroy).start()
+        return True
 
     def reveal(self, path):
         winapi.reveal(path)

@@ -203,5 +203,21 @@ class DevJunkTests(TempTree):
         self.assertEqual([p["name"] for p in res["projects"]], ["app1"])
 
 
+class InstallerTests(unittest.TestCase):
+    def test_status_from_source(self):
+        from spacehound import installer
+        st = installer.status()
+        self.assertFalse(st["can_install"])          # only the built .exe can install itself
+        self.assertFalse(st["running_installed"])
+        self.assertTrue(st["path"].endswith("SpaceHound.exe"))
+
+    def test_install_requires_exe(self):
+        from spacehound import installer
+        if os.name != "nt":
+            self.skipTest("Windows only")
+        with self.assertRaises(RuntimeError):
+            installer.install()
+
+
 if __name__ == "__main__":
     unittest.main()
